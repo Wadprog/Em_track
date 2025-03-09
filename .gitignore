@@ -1,0 +1,25 @@
+# Node modules\nnode_modules/\n*/node_modules/\n**/node_modules/\n\n# Environment variables\n.env\n.env.*\n*.env\n\n# Logs\nlogs\n*.log\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# Build output\ndist/\nbuild/\n*/dist/\n*/build/\n\n# Docker volumes\npostgres_data/\n**/postgres_data/\n\n# IDE files\n.idea/\n.vscode/\n*.sw*\n\n# OS files\n.DS_Store\nThumbs.db\n\n# Coverage\ncoverage/\n\n# Temp files\ntmp/\ntemp/
+
+
+.DS_Store
+.vscode/
+unknown/
+node_modules/
+api/node_modules/
+app/node_modules/
+ex_wallet_watcher/node_modules/
+price_watcher/node_modules/
+tokenMigration/node_modules/
+wallet_token_matcher/node_modules/
+
+node_modules
+api/node_modules
+app/node_modules
+ex_wallet_watcher/node_modules
+price_watcher/node_modules
+tokenMigration/node_modules
+wallet_token_matcher/node_modules
+api/*.json
+api/olddbs
+api/olddbs/
+api/db.json

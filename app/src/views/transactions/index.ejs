@@ -1,0 +1,155 @@
+<%- include('../layout', { title: 'Transactions' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Transactions</h1>
+    <a href="/transactions/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Transaction
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="mb-4">
+            <form action="/transactions" method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Source Wallet</label>
+                    <select name="wallet_from_id" class="form-select">
+                        <option value="">All Source Wallets</option>
+                        <% wallets.forEach(function(wallet) { %>
+                            <option value="<%= wallet.id %>" <%= selectedFromWallet == wallet.id ? 'selected' : '' %>>
+                                <%= wallet.address %> (<%= wallet.exchange.name %>)
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Destination Wallet</label>
+                    <select name="wallet_to_id" class="form-select">
+                        <option value="">All Destination Wallets</option>
+                        <% wallets.forEach(function(wallet) { %>
+                            <option value="<%= wallet.id %>" <%= selectedToWallet == wallet.id ? 'selected' : '' %>>
+                                <%= wallet.address %> (<%= wallet.exchange.name %>)
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Min Amount</label>
+                    <input type="number" step="0.000000001" name="min_amount" class="form-control" value="<%= minAmount %>">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Max Amount</label>
+                    <input type="number" step="0.000000001" name="max_amount" class="form-control" value="<%= maxAmount %>">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary d-block">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Token</label>
+                    <select name="token_id" class="form-select">
+                        <option value="">All Tokens</option>
+                        <% tokens.forEach(function(token) { %>
+                            <option value="<%= token.id %>" <%= selectedToken == token.id ? 'selected' : '' %>>
+                                <%= token.mint %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date From</label>
+                    <input type="date" name="date_from" class="form-control" value="<%= dateFrom %>">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date To</label>
+                    <input type="date" name="date_to" class="form-control" value="<%= dateTo %>">
+                </div>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Token</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% transactions.forEach(function(transaction) { %>
+                        <tr>
+                            <td>
+                                <a href="/wallets/<%= transaction.sourceWallet.id %>">
+                                    <%= transaction.sourceWallet.address %>
+                                    <small class="text-muted d-block">
+                                        <%= transaction.sourceWallet.exchange.name %>
+                                    </small>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/wallets/<%= transaction.destinationWallet.id %>">
+                                    <%= transaction.destinationWallet.address %>
+                                    <small class="text-muted d-block">
+                                        <%= transaction.destinationWallet.exchange.name %>
+                                    </small>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/tokens/<%= transaction.token.id %>">
+                                    <%= transaction.token.mint %>
+                                </a>
+                            </td>
+                            <td><%= transaction.amount %></td>
+                            <td><%= new Date(transaction.createdAt).toLocaleString() %></td>
+                            <td class="table-actions">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/transactions/<%= transaction.id %>" class="btn btn-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="/transactions/<%= transaction.id %>/edit" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="/transactions/<%= transaction.id %>?_method=DELETE" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-danger delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (transactions.length === 0) { %>
+            <div class="text-center py-4">
+                <p class="text-muted">No transactions found</p>
+            </div>
+        <% } %>
+
+        <% if (totalPages > 1) { %>
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                        <a class="page-link" href="/transactions?page=<%= page - 1 %>&<%= searchParams %>">Previous</a>
+                    </li>
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= page === i ? 'active' : '' %>">
+                            <a class="page-link" href="/transactions?page=<%= i %>&<%= searchParams %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                    <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                        <a class="page-link" href="/transactions?page=<%= page + 1 %>&<%= searchParams %>">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        <% } %>
+    </div>
+</div> 

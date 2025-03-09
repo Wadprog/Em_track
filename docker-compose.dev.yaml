@@ -1,0 +1,64 @@
+services:
+  wallet_token_matcher:
+    container_name: wallet_token_matcher
+    image: wallet_token_matcher:0.0.1
+    build:
+      context: ./wallet_token_matcher
+    # volumes:
+    #   - ./wallet_token_matcher:/app
+    depends_on:
+      - app
+      - postgres
+    restart: always
+  ex_wallet_watcher:
+    container_name: ex_wallet_watcher
+    image: ex_wallet_watcher:0.0.1
+    build:
+      context: ./ex_wallet_watcher
+      dockerfile: Dockerfile
+    # volumes:
+    #   - ./wallet_watcher:/app
+    depends_on:
+      - app
+      - postgres
+  app:
+    container_name: manno_app_dev
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      # Database configuration
+      - DATABASE_URL=postgres://em:em@postgres:5432/em
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=em
+      - DB_USER=em
+      - DB_PASSWORD=em
+    depends_on:
+      - postgres
+    command: npm run dev
+    restart: unless-stopped
+
+  postgres:
+    container_name: manno_postgres_dev
+    image: 'postgres:12'
+    ports:
+      - '5434:5432'
+    environment:
+      - POSTGRES_USER=em
+      - POSTGRES_PASSWORD=em
+      - POSTGRES_DB=em
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

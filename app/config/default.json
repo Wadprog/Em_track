@@ -1,0 +1,29 @@
+{
+  "smtp": {
+    "user": "mzghhfqe244g3ssi@ethereal.email",
+    "pass": "VGwXCd8dr3xZDNTXuZ",
+    "host": "smtp.ethereal.email",
+    "port": 587,
+    "secure": true
+  },
+  "dbSettings": {
+    "dialect": "postgres"
+  },
+  "sendEmailFrom": "test@vwanu.com",
+  "multerSetting": {},
+  "JWT_SECRET": "StageSecretIsREal",
+  "maxPostImages": 3,
+  "maxPostVideos": 1,
+  "maxPostAudios": 1,
+  "BASE_URL": "http//localhost:",
+  "mediumSize": "w_70,h_53,c_scale",
+  "smallSize": "w_70,h_53,c_scale",
+  "tinySize": "w_70,h_53,c_scale",
+
+  "cloudinary": {
+    "CLOUDINARY_API_SECRET": "add your own",
+    "CLOUDINARY_API_KEY": "your key ",
+    "CLOUDINARY_CLOUD_NAME": "your name"
+  }
+
+}

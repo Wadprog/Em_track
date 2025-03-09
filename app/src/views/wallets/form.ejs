@@ -1,0 +1,57 @@
+<%- include('../layout', { title: wallet ? 'Edit Wallet' : 'New Wallet' }) %>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title mb-4"><%= wallet ? 'Edit Wallet' : 'New Wallet' %></h1>
+
+        <form action="<%= wallet ? `/wallets/${wallet.id}?_method=PUT` : '/wallets' %>" method="POST">
+            <div class="mb-3">
+                <label for="address" class="form-label">Wallet Address</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    value="<%= wallet ? wallet.address : '' %>"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="exchange_id" class="form-label">Exchange</label>
+                <select class="form-select" id="exchange_id" name="exchange_id" required>
+                    <option value="">Select Exchange</option>
+                    <% exchanges.forEach(function(exchange) { %>
+                        <option 
+                            value="<%= exchange.id %>" 
+                            <%= (wallet && wallet.exchange_id == exchange.id) || 
+                                (!wallet && selectedExchangeId == exchange.id) ? 'selected' : '' %>
+                        >
+                            <%= exchange.name %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="initial_balance" class="form-label">Initial Balance</label>
+                <input
+                    type="number"
+                    step="0.000000001"
+                    class="form-control"
+                    id="initial_balance"
+                    name="initial_balance"
+                    value="<%= wallet ? wallet.initialBalance : '0' %>"
+                    required
+                >
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="/wallets" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <%= wallet ? 'Update' : 'Create' %> Wallet
+                </button>
+            </div>
+        </form>
+    </div>
+</div> 

@@ -1,0 +1,83 @@
+<%- include('../layout', { title: token ? 'Edit Token' : 'New Token' }) %>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title"><%= token ? 'Edit Token' : 'New Token' %></h1>
+        
+        <form action="<%= token ? `/tokens/${token.id}?_method=PUT` : '/tokens' %>" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="mint" class="form-label">Mint Address</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="mint" 
+                           name="mint" 
+                           required
+                           value="<%= token ? token.mint : '' %>"
+                           placeholder="Enter token mint address">
+                    <div class="form-text">The unique identifier for this token on the blockchain</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="wallet" class="form-label">Wallet</label>
+                    <select name="wallet_id" id="wallet" class="form-select" required>
+                        <option value="">Select Wallet</option>
+                        <% wallets.forEach(wallet => { %>
+                            <option value="<%= wallet.id %>"
+                                <%= token && token.wallet_id === wallet.id ? 'selected' : '' %>
+                                <%= wallet.id === Number(preselectedWallet) ? 'selected' : '' %>>
+                                <%= wallet.address %> (<%= wallet.exchange.name %>)
+                            </option>
+                        <% }) %>
+                    </select>
+                    <div class="form-text">The wallet that owns this token</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="origin" class="form-label">Origin</label>
+                    <select name="origin" id="origin" class="form-select" required>
+                        <option value="">Select Origin</option>
+                        <option value="minted" <%= token && token.origin === 'minted' ? 'selected' : '' %>>
+                            Minted
+                        </option>
+                        <option value="imported" <%= token && token.origin === 'imported' ? 'selected' : '' %>>
+                            Imported
+                        </option>
+                    </select>
+                    <div class="form-text">How this token was acquired</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="metadata" class="form-label">Metadata URL (Optional)</label>
+                    <input type="url" 
+                           class="form-control" 
+                           id="metadata" 
+                           name="metadata_url"
+                           value="<%= token ? token.metadata_url : '' %>"
+                           placeholder="https://...">
+                    <div class="form-text">URL to the token's metadata (if available)</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="/tokens" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> <%= token ? 'Update' : 'Create' %> Token
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mintInput = document.getElementById('mint');
+    
+    // Auto-format mint address to uppercase
+    mintInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+});
+</script> 

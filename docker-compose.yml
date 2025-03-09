@@ -1,0 +1,71 @@
+services:
+  ex_wallet_watcher:
+    container_name: ex_wallet_watcher
+    image: ex_wallet_watcher:0.0.1
+    build:
+      context: ./ex_wallet_watcher
+      dockerfile: Dockerfile
+    # volumes:
+    #   - ./wallet_watcher:/app
+    depends_on:
+      - em_api
+    restart: always
+  wallet_token_matcher:
+    container_name: wallet_token_matcher
+    image: wallet_token_matcher:0.0.1
+    build:
+      context: ./wallet_token_matcher
+    # volumes:
+    #   - ./wallet_token_matcher:/app
+    depends_on:
+      - em_api
+    restart: always
+  price_watcher:
+    container_name: price_watcher
+    image: price_watcher:0.0.1
+    build:
+      context: ./price_watcher
+    # volumes:
+    #   - ./price_watcher:/app
+    depends_on:
+      - em_api
+    restart: always
+
+  tokenMigration:
+    container_name: tokenMigration
+    image: token_migration:0.0.1
+    build:
+      context: ./tokenMigration
+    # volumes:
+    #   - ./price_watcher:/app
+    depends_on:
+      - em_api
+    restart: always
+
+  em_api:
+    container_name: api
+    image: em_api:0.0.1
+    ports:
+      - '3000:3000'
+    build:
+      context: ./api
+    volumes:
+      - ./api:/app
+    restart: always
+  pg_db:
+    container_name: pg_db
+    image: 'postgres:12'
+    ports:
+      - '5432:5432'
+    restart: always
+    environment:
+      - POSTGRES_USER=em
+      - POSTGRES_PASSWORD=em
+      - POSTGRES_DB=em
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - em_data:/var/lib/postgresql/data
+
+volumes:
+  solana_bot: {}
+  em_data: {}

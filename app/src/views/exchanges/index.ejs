@@ -1,0 +1,81 @@
+<%- layout('layout') %> <% title = 'Exchanges' %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Exchanges</h1>
+  <a href="/exchanges/new" class="btn btn-primary">
+    <i class="fas fa-plus"></i> New Exchange
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (exchanges && exchanges.length > 0) { %> <%
+          exchanges.forEach(function(exchange) { %>
+          <tr>
+            <td><%= exchange.name %></td>
+            <td><%= exchange.address %></td>
+            <td><%= new Date(exchange.createdAt).toLocaleDateString() %></td>
+            <td class="table-actions">
+              <div class="btn-group btn-group-sm">
+                <a href="/exchanges/<%= exchange.id %>" class="btn btn-info">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a
+                  href="/exchanges/<%= exchange.id %>/edit"
+                  class="btn btn-warning"
+                >
+                  <i class="fas fa-edit"></i>
+                </a>
+                <form
+                  action="/exchanges/<%= exchange.id %>?_method=DELETE"
+                  method="POST"
+                  class="d-inline"
+                >
+                  <button type="submit" class="btn btn-danger delete-btn">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <% }); %> <% } else { %>
+          <tr>
+            <td colspan="4" class="text-center">No exchanges found</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (totalPages > 1) { %>
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="/exchanges?page=<%= page - 1 %>"
+            >Previous</a
+          >
+        </li>
+        <% for(let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= page === i ? 'active' : '' %>">
+          <a class="page-link" href="/exchanges?page=<%= i %>"><%= i %></a>
+        </li>
+        <% } %>
+        <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="/exchanges?page=<%= page + 1 %>">Next</a>
+        </li>
+      </ul>
+    </nav>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<%- include('../layout', { title: exchange ? 'Edit Exchange' : 'New Exchange' })
+%>
+
+<div class="card">
+  <div class="card-body">
+    <h1 class="card-title mb-4">
+      <%= exchange ? 'Edit Exchange' : 'New Exchange' %>
+    </h1>
+
+    <form
+      action="<%= exchange ? `/exchanges/${exchange.id}?_method=PUT` : '/exchanges' %>"
+      method="POST"
+    >
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          value="<%= exchange ? exchange.name : '' %>"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input
+          type="text"
+          class="form-control"
+          id="address"
+          name="address"
+          value="<%= exchange ? exchange.address : '' %>"
+          required
+        />
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <a href="/exchanges" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <%= exchange ? 'Update' : 'Create' %> Exchange
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

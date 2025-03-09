@@ -1,0 +1,110 @@
+<%- include('layout', { title: 'Home' }) %>
+
+<div class="text-center mb-5">
+  <h1 class="display-4">Crypto Management System</h1>
+  <p class="lead">
+    Manage your crypto exchanges, wallets, tokens, and transactions
+  </p>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-exchange-alt fa-3x mb-3 text-primary"></i>
+        <h5 class="card-title">Exchanges</h5>
+        <p class="card-text">Manage your cryptocurrency exchanges</p>
+        <a href="/exchanges" class="btn btn-primary">View Exchanges</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-wallet fa-3x mb-3 text-success"></i>
+        <h5 class="card-title">Wallets</h5>
+        <p class="card-text">Manage your crypto wallets</p>
+        <a href="/wallets" class="btn btn-success">View Wallets</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-coins fa-3x mb-3 text-warning"></i>
+        <h5 class="card-title">Tokens</h5>
+        <p class="card-text">Manage your tokens and coins</p>
+        <a href="/tokens" class="btn btn-warning">View Tokens</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-3 mb-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-exchange-alt fa-3x mb-3 text-info"></i>
+        <h5 class="card-title">Transactions</h5>
+        <p class="card-text">Track your crypto transactions</p>
+        <a href="/transactions" class="btn btn-info">View Transactions</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Quick Actions</h5>
+        <div class="list-group">
+          <a
+            href="/exchanges/new"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-plus"></i> Add New Exchange
+          </a>
+          <a href="/wallets/new" class="list-group-item list-group-item-action">
+            <i class="fas fa-plus"></i> Add New Wallet
+          </a>
+          <a href="/tokens/new" class="list-group-item list-group-item-action">
+            <i class="fas fa-plus"></i> Add New Token
+          </a>
+          <a
+            href="/transactions/new"
+            class="list-group-item list-group-item-action"
+          >
+            <i class="fas fa-plus"></i> Record New Transaction
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">System Overview</h5>
+        <div class="row text-center">
+          <div class="col-6 col-lg-3 mb-3">
+            <h3 class="text-primary"><%= stats?.exchangeCount || 0 %></h3>
+            <small>Exchanges</small>
+          </div>
+          <div class="col-6 col-lg-3 mb-3">
+            <h3 class="text-success"><%= stats?.walletCount || 0 %></h3>
+            <small>Wallets</small>
+          </div>
+          <div class="col-6 col-lg-3 mb-3">
+            <h3 class="text-warning"><%= stats?.tokenCount || 0 %></h3>
+            <small>Tokens</small>
+          </div>
+          <div class="col-6 col-lg-3 mb-3">
+            <h3 class="text-info"><%= stats?.transactionCount || 0 %></h3>
+            <small>Transactions</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

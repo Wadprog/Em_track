@@ -1,0 +1,183 @@
+<%- layout('layout') %> <% title = 'Exchanges' %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Dashboard</h1>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Exchanges Column -->
+    <div class="col-md-4">
+      <div class="card">
+        <div
+          class="card-header"
+          data-bs-toggle="collapse"
+          data-bs-target="#exchangesCollapse"
+          aria-expanded="true"
+        >
+          <h5 class="mb-0">Exchanges</h5>
+        </div>
+        <div id="exchangesCollapse" class="collapse show">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (exchanges && exchanges.length > 0) { %> <%
+                  exchanges.forEach(function(exchange) { %>
+                  <tr>
+                    <td><%= exchange.name %></td>
+                    <td><%= exchange.address %></td>
+                  </tr>
+                  <% }); %> <% } else { %>
+                  <tr>
+                    <td colspan="2" class="text-center">No exchanges found</td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tokens Column -->
+    <div class="col-md-5">
+      <div class="card">
+        <div
+          class="card-header"
+          data-bs-toggle="collapse"
+          data-bs-target="#tokensCollapse"
+          aria-expanded="true"
+        >
+          <h5 class="mb-0">Tokens</h5>
+        </div>
+        <div id="tokensCollapse" class="collapse show">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Price Trend</th>
+                    <th>Last Update</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (tokens && tokens.length > 0) { %> <%
+                  tokens.forEach(function(token, index) { %>
+                  <tr>
+                    <td><%= token.name %></td>
+                    <!-- <td>$<%= token.price.toFixed(2) %></td> -->
+                    <td>$5</td>
+                    <td style="width: 120px">
+                      <canvas
+                        id="priceChart<%= index %>"
+                        width="100"
+                        height="30"
+                      ></canvas>
+                    </td>
+                    <td>
+                      <%= new
+                      Date(token.priceIndexes[token.priceIndexes.length-1].date).toLocaleString()
+                      %>
+                    </td>
+                  </tr>
+                  <% }); %> <% } else { %>
+                  <tr>
+                    <td colspan="4" class="text-center">No tokens found</td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Migrated Tokens Column -->
+    <div class="col-md-3">
+      <div class="card">
+        <div
+          class="card-header"
+          data-bs-toggle="collapse"
+          data-bs-target="#migratedCollapse"
+          aria-expanded="true"
+        >
+          <h5 class="mb-0">Recently Migrated Tokens</h5>
+        </div>
+        <div id="migratedCollapse" class="collapse show">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm" id="migratedTokensTable">
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="migratedTokensBody">
+                  <tr>
+                    <td colspan="2" class="text-center">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  id="tokenData"
+  data-tokens="<%- encodeURIComponent(JSON.stringify(tokens || [])) %>"
+></div>
+<div
+  id="tokenData"
+  data-tokens="<%- encodeURIComponent(JSON.stringify(tokens || [])) %>"
+></div>
+
+<script src="/js/dashboard-charts.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tokensData = JSON.parse(
+      decodeURIComponent(document.getElementById('tokenData').dataset.tokens)
+    )
+    console.log({ tokensData })
+    const migratedTokens = tokensData
+      .filter((token) => token.migrationDate)
+      .sort((a, b) => new Date(b.migrationDate) - new Date(a.migrationDate))
+
+    const tbody = document.getElementById('migratedTokensBody')
+
+    if (migratedTokens.length > 0) {
+      tbody.innerHTML = migratedTokens
+        .map(
+          (token) => `
+          <tr>
+            <td>${token.name}</td>
+            <td>${new Date(token.migrationDate).toLocaleString()}</td>
+          </tr>
+        `
+        )
+        .join('')
+    } else {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="2" class="text-center">No migrated tokens</td>
+        </tr>
+      `
+    }
+  })
+</script>

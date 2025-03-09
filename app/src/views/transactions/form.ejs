@@ -1,0 +1,93 @@
+<%- include('../layout', { title: transaction ? 'Edit Transaction' : 'New Transaction' }) %>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title"><%= transaction ? 'Edit Transaction' : 'New Transaction' %></h1>
+        
+        <form action="<%= transaction ? `/transactions/${transaction.id}?_method=PUT` : '/transactions' %>" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="sourceWallet" class="form-label">Source Wallet</label>
+                    <select name="wallet_from_id" id="sourceWallet" class="form-select" required>
+                        <option value="">Select Source Wallet</option>
+                        <% wallets.forEach(wallet => { %>
+                            <option value="<%= wallet.id %>" 
+                                <%= transaction && transaction.wallet_from_id === wallet.id ? 'selected' : '' %>
+                                <%= wallet.id === Number(preselectedFromWallet) ? 'selected' : '' %>>
+                                <%= wallet.address %> (<%= wallet.exchange.name %>)
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="destinationWallet" class="form-label">Destination Wallet</label>
+                    <select name="wallet_to_id" id="destinationWallet" class="form-select" required>
+                        <option value="">Select Destination Wallet</option>
+                        <% wallets.forEach(wallet => { %>
+                            <option value="<%= wallet.id %>"
+                                <%= transaction && transaction.wallet_to_id === wallet.id ? 'selected' : '' %>
+                                <%= wallet.id === Number(preselectedToWallet) ? 'selected' : '' %>>
+                                <%= wallet.address %> (<%= wallet.exchange.name %>)
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="token" class="form-label">Token</label>
+                    <select name="token_id" id="token" class="form-select" required>
+                        <option value="">Select Token</option>
+                        <% tokens.forEach(token => { %>
+                            <option value="<%= token.id %>"
+                                <%= transaction && transaction.token_id === token.id ? 'selected' : '' %>
+                                <%= token.id === Number(preselectedToken) ? 'selected' : '' %>>
+                                <%= token.mint %> (<%= token.origin %>)
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" 
+                           class="form-control" 
+                           id="amount" 
+                           name="amount" 
+                           step="0.000000001" 
+                           required
+                           value="<%= transaction ? transaction.amount : '' %>">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="/transactions" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> <%= transaction ? 'Update' : 'Create' %> Transaction
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sourceWallet = document.getElementById('sourceWallet');
+    const destinationWallet = document.getElementById('destinationWallet');
+    
+    // Prevent selecting the same wallet for source and destination
+    sourceWallet.addEventListener('change', function() {
+        Array.from(destinationWallet.options).forEach(option => {
+            option.disabled = option.value === this.value && option.value !== '';
+        });
+    });
+
+    destinationWallet.addEventListener('change', function() {
+        Array.from(sourceWallet.options).forEach(option => {
+            option.disabled = option.value === this.value && option.value !== '';
+        });
+    });
+});
+</script> 

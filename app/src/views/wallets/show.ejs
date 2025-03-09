@@ -1,0 +1,156 @@
+<%- include('../layout', { title: 'Wallet Details' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Wallet Details</h1>
+  <div>
+    <a href="/wallets/<%= wallet.id %>/edit" class="btn btn-warning">
+      <i class="fas fa-edit"></i> Edit
+    </a>
+    <a href="/wallets" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Wallet Information</h5>
+        <dl class="row">
+          <dt class="col-sm-4">Address</dt>
+          <dd class="col-sm-8"><%= wallet.address %></dd>
+
+          <dt class="col-sm-4">Exchange</dt>
+          <dd class="col-sm-8">
+            <a href="/exchanges/<%= wallet.exchange.id %>">
+              <%= wallet.exchange.name %>
+            </a>
+          </dd>
+
+          <dt class="col-sm-4">Initial Balance</dt>
+          <dd class="col-sm-8"><%= wallet.initialBalance %></dd>
+
+          <dt class="col-sm-4">Created</dt>
+          <dd class="col-sm-8">
+            <%= new Date(wallet.createdAt).toLocaleString() %>
+          </dd>
+
+          <dt class="col-sm-4">Updated</dt>
+          <dd class="col-sm-8">
+            <%= new Date(wallet.updatedAt).toLocaleString() %>
+          </dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title mb-0">Tokens</h5>
+          <a
+            href="/tokens/new?wallet_id=<%= wallet.id %>"
+            class="btn btn-sm btn-primary"
+          >
+            <i class="fas fa-plus"></i> Add Token
+          </a>
+        </div>
+
+        <% if (wallet.tokens && wallet.tokens.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Mint Address</th>
+                <th>Origin</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% wallet.tokens.forEach(function(token) { %>
+              <tr>
+                <td><%= token.mint %></td>
+                <td>
+                  <span
+                    class="badge bg-<%= token.origin === 'minted' ? 'success' : 'info' %>"
+                  >
+                    <%= token.origin %>
+                  </span>
+                </td>
+                <td>
+                  <a href="/tokens/<%= token.id %>" class="btn btn-sm btn-info">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <p class="text-muted mb-0">No tokens in this wallet</p>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title mb-0">Recent Transactions</h5>
+          <a
+            href="/transactions/new?wallet_id=<%= wallet.id %>"
+            class="btn btn-sm btn-primary"
+          >
+            <i class="fas fa-plus"></i> New Transaction
+          </a>
+        </div>
+
+        <% if (wallet.transactions && wallet.transactions.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Token</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% wallet.transactions.forEach(function(transaction) { %>
+              <tr>
+                <td>
+                  <% if (transaction.wallet_from_id === wallet.id) { %>
+                  <span class="text-danger">Sent</span>
+                  <% } else { %>
+                  <span class="text-success">Received</span>
+                  <% } %>
+                </td>
+                <td><%= transaction.amount %></td>
+                <td><%= transaction.token.mint %></td>
+                <td>
+                  <%= new Date(transaction.createdAt).toLocaleDateString() %>
+                </td>
+                <td>
+                  <a
+                    href="/transactions/<%= transaction.id %>"
+                    class="btn btn-sm btn-info"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </a>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <p class="text-muted mb-0">No transactions found</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
